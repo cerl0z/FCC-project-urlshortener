@@ -6,7 +6,6 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
 const dns = require("dns");
-const { url } = require("inspector");
 const URL = require("url").URL;
 const port = process.env.PORT || 3000;
 
@@ -29,7 +28,7 @@ app.get("/", function (req, res) {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post("/api/shorturl", (req, res, next) => {
+app.post("/api/shorturl", (req, res) => {
   const o_url = req.body.url;
   const s_url = Math.floor(Math.random() * 1000);
   const regex = "^https?://www\\.";
