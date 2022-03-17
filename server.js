@@ -31,16 +31,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.post("/api/shorturl", (req, res) => {
   const o_url = req.body.url;
   const s_url = Math.floor(Math.random() * 1000);
-  const regex = "^https?://www\\.";
-
+  const regex =
+    "^((ftp|http|https)://)?(www.)(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(.[a-zA-Z]+)+((/)[w#]+)*(/w+?[a-zA-Z0-9_]+=w+(&[a-zA-Z0-9_]+=w+)*)?/?$";
   try {
+    console.log("reqbody: " + o_url);
     const urlObj = new URL(o_url);
-
-    if (!urlObj.toString().match(regex)) {
+    if (!o_url.match(regex)) {
       res.json({
         error: "invalid url",
       });
     } else {
+      console.log("url Obj: " + urlObj.hostname);
       dns.lookup(urlObj.hostname, async (err) => {
         let findOne = await Url.findOne({ original_url: o_url });
 
