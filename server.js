@@ -32,7 +32,7 @@ app.post("/api/shorturl", (req, res) => {
   const o_url = req.body.url;
   const s_url = Math.floor(Math.random() * 1000);
   const regex =
-    "^((ftp|http|https)://)?(www.)(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(.[a-zA-Z]+)+((/)[w#]+)*(/w+?[a-zA-Z0-9_]+=w+(&[a-zA-Z0-9_]+=w+)*)?/?$";
+    "^((http|https)://)?(www.)(?!.*(http|https|www.))[a-zA-Z0-9_-]+(.[a-zA-Z]+)+((/)[w#]+)*(/w+?[a-zA-Z0-9_]+=w+(&[a-zA-Z0-9_]+=w+)*)?/?$";
   try {
     console.log("reqbody: " + o_url);
     const urlObj = new URL(o_url);
