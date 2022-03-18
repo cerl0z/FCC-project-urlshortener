@@ -30,14 +30,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post("/api/shorturl", async (req, res) => {
   const o_url = req.body.url;
-  const o_url_string = o_url.toString();
+  //o_url_string = o_url.toString();
   const s_url = Math.floor(Math.random() * 1000);
-  const regex =
-    "^((http|https)://)(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(.[a-zA-Z]+)+((/)[w#]+)*(/w+?[a-zA-Z0-9_]+=w+(&[a-zA-Z0-9_]+=w+)*)?/?$";
+  // const regex =
+  //  "^((http|https)://)(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(.[a-zA-Z]+)+((/)[w#]+)*(/w+?[a-zA-Z0-9_]+=w+(&[a-zA-Z0-9_]+=w+)*)?/?$";
   try {
     console.log("reqbody: " + o_url);
-    //const urlObj = new URL(o_url);
-    if (!req.body.url.match(regex)) {
+    const url = new URL(o_url);
+    //if (!req.body.url.match(regex)) {
+    if (url.protocol === "ftp:") {
       res.json({
         error: "invalid url",
       });
