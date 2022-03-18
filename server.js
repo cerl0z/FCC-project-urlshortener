@@ -28,47 +28,47 @@ app.get("/", function (req, res) {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post("/api/shorturl", (req, res) => {
+app.post("/api/shorturl", async (req, res) => {
   const o_url = req.body.url;
+  const o_url_string = o_url.toString();
   const s_url = Math.floor(Math.random() * 1000);
   const regex =
-    "^((http|https)://)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(.[a-zA-Z]+)+((/)[w#]+)*(/w+?[a-zA-Z0-9_]+=w+(&[a-zA-Z0-9_]+=w+)*)?/?$";
+    "^((http|https)://)(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(.[a-zA-Z]+)+((/)[w#]+)*(/w+?[a-zA-Z0-9_]+=w+(&[a-zA-Z0-9_]+=w+)*)?/?$";
   try {
     console.log("reqbody: " + o_url);
-    const urlObj = new URL(o_url);
-    if (!o_url.match(regex)) {
+    //const urlObj = new URL(o_url);
+    if (!req.body.url.match(regex)) {
       res.json({
         error: "invalid url",
       });
     } else {
-      console.log("url Obj: " + urlObj.hostname);
-      dns.lookup(urlObj.hostname, async (err) => {
-        if (err) {
-          console.log(err);
-          res.json({ error: "invalid url" });
-        }
+      // console.log("url Obj: " + urlObj.hostname);
+      // dns.lookup(o_url_string, async (err) => {
+      // if (err) {
+      //   console.log(err);
+      //   res.json({ error: "invalid url" });
+      // }
+      let findOne = await Url.findOne({ original_url: o_url });
 
-        let findOne = await Url.findOne({ original_url: o_url });
+      if (findOne) {
+        res.json({
+          original_url: findOne.original_url,
+          short_url: findOne.short_url,
+        });
+      } else {
+        findOne = new Url({
+          original_url: o_url,
+          short_url: s_url,
+        });
 
-        if (findOne) {
-          res.json({
-            original_url: findOne.original_url,
-            short_url: findOne.short_url,
-          });
-        } else {
-          findOne = new Url({
-            original_url: o_url,
-            short_url: s_url,
-          });
+        await findOne.save();
 
-          await findOne.save();
-
-          res.json({
-            original_url: findOne.original_url,
-            short_url: findOne.short_url,
-          });
-        }
-      });
+        res.json({
+          original_url: findOne.original_url,
+          short_url: findOne.short_url,
+        });
+      }
+      // });
     }
   } catch (err) {
     if (err) {
